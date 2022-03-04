@@ -1,64 +1,36 @@
+const fs = require('fs');
+const { Client, Intents, Collection } = require('discord.js');
+const client = new Client({ partials: ['CHANNEL', 'MESSAGE', 'REACTION'],
+    intents: [
+    Intents.FLAGS.DIRECT_MESSAGES,
+    Intents.FLAGS.GUILDS, 
+    Intents.FLAGS.GUILD_BANS,
+    Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+    Intents.FLAGS.GUILD_MEMBERS, 
+    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    Intents.FLAGS.GUILD_MESSAGES, 
+    Intents.FLAGS.GUILD_PRESENCES,
+]});
 
-const Discord = require('discord.js');
-const client = new Discord.Client({partials: ['MESSAGE', "CHANNEL", "REACTION"]});
+const config = require('./config.json');
 
-const {loadCommands} = require('./utils/loadCommands');
-const config = require('./settings.json');
+client.commands = new Collection();
 
-require('./utils/loadEvents')(client);
+const utility = fs.readdirSync('./util').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+const guildCommandFiles = fs.readdirSync('./commands/guildCommands').filter(file => file.endsWith('.js'));
+const globalCommandFiles = fs.readdirSync('./commands/globalCommands').filter(file => file.endsWith('.js'));
 
-client.commands = new Discord.Collection();
-client.aliases = new Discord.Collection();
-
-loadCommands(client);
-
-let memberCounter = require('./counters/member-counter');
-
-client.on('guildMemberAdd',guildMember=> {      // if a user joins the server
-    let {guild} = guildMember;
-    
-    if(guild.id ==='723482268886368307'){  // if in our server
-        let requirementsID = '764080032079020032'  // channel id
-        let verifyID = '761611143503675452'  // channel id
-
-        const welcomeEmbed = new Discord.MessageEmbed()
-        .setColor('#FFB6C1')
-        .setTitle(`**${guild}**`)
-        .setDescription(`Welcome <@${guildMember.user.id}> 
-        
-        •  verify in ${guildMember.guild.channels.cache.get(verifyID).toString()}   // makes the channel ID clickable
-        •  ${guildMember.guild.channels.cache.get(requirementsID).toString()}   // makes the channel ID clickable
-        •  \`?apply\` to apply to join tokyo`)
-        .setImage('https://media.giphy.com/media/GEkAU4EckSumA/giphy.gif')
-        .setThumbnail(guildMember.user.displayAvatarURL({dynamic: true}))
-        .setTimestamp()
-        
-        let welcomeRole = guildMember.guild.roles.cache.find(role => role.name === 'Un-Verified')  // fetches role by name
-            
-        guildMember.roles.add(welcomeRole);  
-        guildMember.guild.channels.cache.get('723485611478220842').send(welcomeEmbed);
+(async () =>{
+    for(file of utility){
+        require(`./util/${file}`)(client)
     }
-})
 
-client.on('guildMemberRemove',guildMember=> {     // when a member leaves send a message in specified chat
-    let {guild} = guildMember;
-    
-    if(guild.id ==='723482268886368307'){
-        const embed = new Discord.MessageEmbed()
-        .setAuthor(guildMember.user.tag) 
-        .setDescription(`**:x: Member left**
-        ${guildMember} left. `) 
-        .setTimestamp()
-        .setColor('#A00808')
-        .setFooter(`ID: ${guildMember.id}`);
+    client.handleListeners();
+    client.handleDatabase();
+    client.handleEvents(eventFiles);
+    client.handleGuildCommands(guildCommandFiles);
+    client.handleGlobalCommands(globalCommandFiles);
+    client.login(config.token);
+})();
 
-        guildMember.guild.channels.cache.get('797152411906342953').send(embed);
-    }
-});
-
-
-client.once('ready', () => {
-    memberCounter(client).catch(console.error); // starts interval to count members and display how many members are in the server
-}) ;
-
-client.login(config.token);
