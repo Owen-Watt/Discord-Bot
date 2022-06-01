@@ -26,7 +26,6 @@ const globalCommandFiles = fs.readdirSync('./commands/globalCommands').filter(fi
         require(`./util/${file}`)(client)
     }
 
-    client.handleListeners();
     client.handleDatabase();
     client.handleEvents(eventFiles);
     client.handleGuildCommands(guildCommandFiles);

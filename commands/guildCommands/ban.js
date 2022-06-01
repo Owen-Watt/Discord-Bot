@@ -1,6 +1,5 @@
-const Discord = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { Permissions } = require('discord.js');
+const { Permissions, MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -23,28 +22,37 @@ module.exports = {
             reason = "No Reason provided";
         } 
 
-        const banEmbedLog = new Discord.MessageEmbed()
+        const banEmbedLog = new MessageEmbed()
         .setColor('#A00808')
         .setTitle('BANNED')
-        .setDescription(`${target} has been banned from the server!
-        Reason: ${reason}
-        Moderator: ${interaction.member}`)
+        .setDescription(`${target} has been banned from the server!`)
+        .addFields(
+            { name: '**Reason:**', value: `${reason}`, inline: true },
+            { name: '**Moderator:**', value:`${interaction.member}`, inline: true },
+        )
         .setTimestamp()
 
         if(interaction.member.permissions.has([Permissions.FLAGS.BAN_MEMBERS])){
-            target.ban().then(() =>{
-                interaction.reply({ 
+            target.ban().then(async () =>{
+                await interaction.reply({ 
                     embeds: [ banEmbedLog ],
                 });
-            }, error =>{
-                interaction.reply({ 
+            }, async (error) =>{
+                await interaction.reply({ 
                     content: `:x: ${error}`,
+                    ephemeral: true,
                 });
             });
-
         }else{
-            interaction.reply({ 
-                content: `:x: You do not have Permissions`,
+            const userNoPermissions = new MessageEmbed()
+            .setColor('#A00808')
+            .setTitle('Ban Command')
+            .setDescription(`:x: You do not have Permissions to use this command.`)
+            .setTimestamp()
+
+            await interaction.reply({ 
+                embeds: [ userNoPermissions ],
+                ephemeral: true,
             });
         } 
 	},
