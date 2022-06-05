@@ -32,7 +32,7 @@ The Bot is deployed to Heroku.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-### Commands
+### Command examples
 - /hug [user]
 
 ![Image of hug command](/images/hug.PNG)
