@@ -18,7 +18,7 @@ npm install
 - Similarly if you want to connect your bot to a MongoDB database, you put your database URL into ```mongo``` in the ```config.json``` file. 
 
 ```
-Config.json
+config.json
 {
     "token": "",
     "guildId": "",
@@ -29,7 +29,17 @@ Config.json
 
 ### Deployment
 The Bot is deployed to Heroku.
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-###Authors
+### Commands
+- /hug [user]
+
+![Image of hug command](/images/hug.PNG)
+
+- /coinflip [bet] (optional)
+
+![Gif of coinflip command](https://gyazo.com/d310e9640867123a9deecacf4fbc3e80.gif)
+
+### Authors
 - **Owen Watt**
