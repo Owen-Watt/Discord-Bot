@@ -1,7 +1,4 @@
-const { webhookId, webhookToken } = require('../config.json');
 const { MessageEmbed } = require("discord.js")
-
-const webhookClient = new WebhookClient({ id: webhookId, token: webhookToken });
 
 module.exports = {
 	name: 'ready',

@@ -5,6 +5,7 @@ Tokyo bot is a Discord Bot built with discord.js.
 ### Prerequisites
 - Node.js 
 - discord.js@13.0.0+
+- MongoDB database
 
 ### Installing
 ```sh
@@ -15,7 +16,7 @@ npm install
 - Put your bot token into ```token``` in the ```config.json``` file.
 - Run the bot with the command ```node main.js```
 
-- Similarly if you want to connect your bot to a MongoDB database, you put your database URL into ```mongo``` in the ```config.json``` file. 
+- Similarly to connect your bot to a MongoDB database, you put your database URL into ```mongo``` in the ```config.json``` file. 
 
 ```
 config.json
