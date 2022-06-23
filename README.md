@@ -33,7 +33,7 @@ The Bot is deployed to Heroku.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-### Command examples
+## Examples
 - /hug [user]
 
 ![Image of hug command](/images/hug.PNG)
@@ -42,5 +42,5 @@ The Bot is deployed to Heroku.
 
 ![Gif of coinflip command](https://gyazo.com/d310e9640867123a9deecacf4fbc3e80.gif)
 
-### Authors
+## Authors
 - **Owen Watt**
