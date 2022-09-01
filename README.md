@@ -49,7 +49,7 @@ The Bot is deployed to Heroku.
 
 - /guildtop [page] (optional)
 
-![Image of guild top command](/images/guildtop.PNG)
+![gif of guild top command](https://gyazo.com/a54934fc441dcaa113f20717462ca3aa.gif)
 
 ## Authors
 - **Owen Watt**
