@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -9,21 +8,22 @@ module.exports = {
             option.setName('suggestion')
                 .setDescription('Enter your suggestion!')
                 .setRequired(true)
-        ),
+        )
+        .setDMPermission(true),
 
-	async execute(interaction, profileData, client) {
+	async execute(interaction, profileData, client, server, color) {
         const suggestion = interaction.options.getString('suggestion');
 
-        const suggestion_player_embed = new MessageEmbed()
-        .setColor("BLURPLE")
+        const suggestion_player_embed = new EmbedBuilder()
+        .setColor(color)
         .setTitle('Support Server')
         .setURL('https://discord.gg/mACacV4eG8')
         .setDescription(`**Thanks for the suggestion!**\n"${suggestion}"`)
 
-        const suggestion_developer_embed = new MessageEmbed()
-        .setColor("GREEN")
+        const suggestion_developer_embed = new EmbedBuilder()
+        .setColor("0x00FF00")
         .setTitle('Suggestion')
-        .setDescription(`User: **${interaction.user.username}#${interaction.user.discriminator}**\nServer: **${interaction.member.guild}**\n\n"${suggestion}"`)
+        .setDescription(`User: **${interaction.user.username}#${interaction.user.discriminator}**\nServer: **${server}**\n\n"${suggestion}"`)
 
         var channel = client.channels.cache.get('988107222997417984');
 

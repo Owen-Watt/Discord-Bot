@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
 const Users = require('../../models/userSchema');
 const options = { 
     minimumFractionDigits: 2,
@@ -16,10 +15,11 @@ module.exports = {
                 .setRequired(false)),
 
 
-	async execute(interaction, profileData) {         
+	async execute(interaction, profileData, client, server, color) {         
         let choice;
         let win
-        let owner = interaction.member.id;
+        let owner = interaction.user.id;
+        var uniqueID = interaction.id;
         let chance = Math.random()>0.5;
         let answer = (chance) ? "Tails" : "Heads";
         let betAmount = interaction.options.getNumber('bet');
@@ -30,8 +30,8 @@ module.exports = {
         }
 
         if(profileData.cash<betAmount){
-            var balanceTooLowEmbed = new MessageEmbed()
-            .setColor('RED')
+            var balanceTooLowEmbed = new EmbedBuilder()
+            .setColor('0xff0000')
             .setTitle("Coinflip :x:")
             .setDescription(`You cannot bet more than your balance!\nYour balance is **$${profileData.cash.toLocaleString('en', options)}**.`)
             return await interaction.reply({ 
@@ -41,8 +41,8 @@ module.exports = {
         }
 
         if(betAmount<0){
-            var negativeBetAmount = new MessageEmbed()
-            .setColor('RED')
+            var negativeBetAmount = new EmbedBuilder()
+            .setColor('0xff0000')
             .setTitle("Coinflip :x:")
             .setDescription(`You cannot bet less than $0!\nYour balance is **$${profileData.cash.toLocaleString('en', options)}**.`)
             return await interaction.reply({ 
@@ -51,23 +51,23 @@ module.exports = {
             })
         }
 
-        const buttons = new MessageActionRow()
+        const buttons = new ActionRowBuilder()
         .addComponents(
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId('Heads')
                 .setLabel('Heads')
-                .setStyle('PRIMARY'),
-            new MessageButton()
+                .setStyle(ButtonStyle.Primary),
+            new ButtonBuilder()
                 .setCustomId('Tails')
                 .setLabel('Tails')
-                .setStyle('PRIMARY'),
-            new MessageButton()
+                .setStyle(ButtonStyle.Primary),
+            new ButtonBuilder()
                 .setCustomId('Cancel')
                 .setLabel('Cancel')
-                .setStyle('DANGER'),
+                .setStyle(ButtonStyle.Danger),
         );
-        var coinflipEmbed = new MessageEmbed()
-        .setColor('WHITE')
+        var coinflipEmbed = new EmbedBuilder()
+        .setColor(color)
         .setTitle("Coinflip")
         .setDescription(`Bet amount: **$${betAmount.toLocaleString('en', options)}**\nTax: **$${taxedCash.toLocaleString('en', options)}** (${tax}%)`)
         
@@ -75,20 +75,25 @@ module.exports = {
             embeds: [coinflipEmbed],
             components: [buttons] ,
         });
-        const filter = m => m.member.id === owner; // filter to ensure the interaction author presses the buttons
+        // filter to ensure the interaction author presses the buttons and prevents buttons being accepted for other interactions
+        const filter = m => {
+            var Author = m.user.id === owner;
+            var sameInteraction = m.message.interaction.id === uniqueID;
+            return Author && sameInteraction;
+        } 
         const collector = interaction.channel.createMessageComponentCollector({ filter, idle:15000, max:1 });
         
         collector.on('collect', async i => { 
             choice = i.customId;
             win = (choice == answer);
             var taxedCash = (tax / 100) * betAmount
-            const coinflipWinEmbed = new MessageEmbed()
-            .setColor('GREEN')
+            const coinflipWinEmbed = new EmbedBuilder()
+            .setColor('0x00FF00')
             .setTitle(`Coinflip - **Win**`)
             .setDescription(`${interaction.member} picked **${choice}**\nBet: **$${betAmount.toLocaleString('en', options)}**\nTax: **$${taxedCash.toLocaleString('en', options)}** (${tax}%)\nWon: **$${(betAmount-taxedCash).toLocaleString('en', options)}**\nNew Balance: **$${(profileData.cash+betAmount-taxedCash).toLocaleString('en', options)}**`)
 
-            const coinflipLoseEmbed = new MessageEmbed()
-            .setColor('RED')
+            const coinflipLoseEmbed = new EmbedBuilder()
+            .setColor('0xff0000')
             .setTitle(`Coinflip - **Loss**`)
             .setDescription(`${interaction.member} picked **${choice}**\nBet: **$${betAmount.toLocaleString('en', options)}**\nNew Balance: **$${(profileData.cash-betAmount).toLocaleString('en', options)}**`)
 
@@ -131,8 +136,8 @@ module.exports = {
             }
 
             if(choice === "Cancel"){
-                coinflipEmbed = new MessageEmbed()
-                .setColor('BLACK')
+                coinflipEmbed = new EmbedBuilder()
+                .setColor('0x000000')
                 .setTitle('Coinflip')
                 .setDescription(`**:x: Cancelled**`)
                 await interaction.editReply({
@@ -145,8 +150,8 @@ module.exports = {
             }
 
             if(reason === "idle"){
-                coinflipEmbed = new MessageEmbed()
-                .setColor('BLACK')
+                coinflipEmbed = new EmbedBuilder()
+                .setColor('0x000000')
                 .setTitle('Coinflip')
                 .setDescription(`**:x: Timed out**`)
                 await interaction.editReply({

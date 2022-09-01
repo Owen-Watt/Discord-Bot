@@ -1,10 +1,15 @@
 # Tokyo Discord Bot
-Tokyo bot is a Discord Bot built with discord.js.
+Tokyo bot is a Discord Bot built with discord.js.\
+The bot is officially [verified](https://support.discord.com/hc/en-us/articles/1500006788922-Bot-Verification-FAQ-for-Parents-Legal-Guardians-and-Other-Sponsors) by Discord. \
+Hug, Punch or Stab your friends. Economy, Statistics and Manacube commands! \
+\
+<img alt="bot status widget" src="https://top.gg/api/widget/status/795289659579957268.svg"> \
+<img alt="bot server count widget" src="https://top.gg/api/widget/servers/795289659579957268.svg">
 ## Getting Started
 
 ### Prerequisites
 - Node.js 
-- discord.js@13.0.0+
+- discord.js@14.0.0+
 - MongoDB database
 
 ### Installing
@@ -40,7 +45,11 @@ The Bot is deployed to Heroku.
 
 - /coinflip [bet] (optional)
 
-![Gif of coinflip command](https://gyazo.com/d310e9640867123a9deecacf4fbc3e80.gif)
+![Gif of coinflip command](https://gyazo.com/883c6c263fa99d75dc058cbc93f7b095.gif)
+
+- /guildtop [page] (optional)
+
+![Image of guild top command](/images/guildtop.PNG)
 
 ## Authors
 - **Owen Watt**

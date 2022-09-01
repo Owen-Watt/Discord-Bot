@@ -1,5 +1,4 @@
-const { MessageEmbed } = require('discord.js');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const Users = require('../../models/userSchema');
 
 module.exports = {
@@ -11,7 +10,7 @@ module.exports = {
                 .setDescription('The user to stab')
                 .setRequired(true)),
  
-	async execute(interaction, profileData) {
+	async execute(interaction, profileData, client, server, color) {
         const target = interaction.options.getMentionable('user');
 
         profileData = await Users.findOne({ userID: target.id });
@@ -33,10 +32,9 @@ module.exports = {
             })
             profile.save();
         }
-            
         if(target != interaction.member){ // if its not a self stab
             await Users.findOneAndUpdate({
-                userID: interaction.member.id,
+                userID: interaction.user.id,
             }, {
                 $inc: {
                     Stabs_Given: 1,
@@ -52,12 +50,12 @@ module.exports = {
             });
         }
 
-        const stabEmbed = new MessageEmbed()
-        .setColor('#F9FAFA')
-        .setDescription(`${target} was **stabbed** by ${interaction.member} :knife:`)
+        const stabEmbed = new EmbedBuilder()
+        .setColor(color)
+        .setDescription(`${target} was **stabbed** by ${interaction.user} :knife:`)
 
-        const selfStab = new MessageEmbed()
-        .setColor('#A00808')
+        const selfStab = new EmbedBuilder()
+        .setColor("0xff0000")
         .setDescription(`:x: **You cannot stab yourself**`)
 
         if(interaction.member === target){   // if they try to stab themselves

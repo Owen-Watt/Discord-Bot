@@ -1,21 +1,14 @@
-const { MessageEmbed } = require("discord.js")
+const { ActivityType } = require("discord.js")
 
 module.exports = {
 	name: 'ready',
 	once: true,
 	execute(client) {
-        var command = '/help';
-		var action = 'LISTENING';
-		setInterval(updatePresence, 150000);
-        
-		function updatePresence(){
-			switch(command){
-				case '/help': command="/hug", action="PLAYING"; break;
-				case '/hug': command="/suggest", action="WATCHING"; break;
-				case '/suggest': command="/coinflip", action="PLAYING"; break;
-				case '/coinflip': command="/help", action="LISTENING"; break;
-			}
-			client.user.setPresence({ activities: [{ name: `${command}`, type: `${action}` }], status: 'online' })
-		}
+		console.log(`Logged in as ${client.user.tag} in ${client.guilds.cache.size} servers`);
+		// setting the bots status to "Watching [server count] servers"
+		client.user.setPresence({ 
+			activities: [{ name: `${client.guilds.cache.size} servers`, type: ActivityType.Watching}], 
+			status: 'online' 
+		})
 	},
 };

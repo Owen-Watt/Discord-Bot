@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const Users = require('../../models/userSchema');
 const options = { 
     minimumFractionDigits: 2,
@@ -14,18 +13,13 @@ module.exports = {
             user.setName("target")
             .setDescription("Users balance to display")
             .setRequired(false)
-        ),
+        )
+        .setDMPermission(true),
 
-	async execute(interaction, profileData) {
-        let author;
+	async execute(interaction, profileData, client, server, color) {
         var target = interaction.options.getMentionable("target");
 
-        // use the users nickname if it exists - otherwise use their account name
-        if(interaction.member.nickname){
-            author = interaction.member.nickname;
-        }else{
-            author = interaction.member.user.username
-        }
+        var author = interaction.user.username
 
         if(target){
             profileData = await Users.findOne({ userID: target.id });
@@ -55,8 +49,8 @@ module.exports = {
             }
         }
 
-        const balanceEmbed = new MessageEmbed()
-        .setColor('NAVY')
+        const balanceEmbed = new EmbedBuilder()
+        .setColor(color)
         .setTitle(`**${author}'s** Bank`)
         .setDescription(`Balance: **$${profileData.cash.toLocaleString('en', options)}**`)
 

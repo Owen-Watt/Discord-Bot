@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const Users = require('../../models/userSchema');
 const options = { 
     minimumFractionDigits: 2,
@@ -11,16 +10,16 @@ module.exports = {
 		.setName('daily')
 		.setDescription('Receieve daily reward'),
 
-	async execute(interaction, profileData) {
+	async execute(interaction, profileData, client, server, color) {
         var reward = 50000;
 
-        const dailyRewardEmbed = new MessageEmbed()
-        .setColor('GREEN')
+        const dailyRewardEmbed = new EmbedBuilder()
+        .setColor('0x00FF00')
         .setTitle(`**Daily Reward**`)
         .setDescription(`User: ${interaction.member}\nClaimed: **$${reward.toLocaleString('en', options)}**\nNew Balance: **$${(profileData.cash+reward).toLocaleString('en', options)}**`)
 
-        const alreadyClaimedEmbed = new MessageEmbed()
-        .setColor('RED')
+        const alreadyClaimedEmbed = new EmbedBuilder()
+        .setColor('0xff0000')
         .setTitle(`**Daily Reward**`)
         .setDescription(`:x: Already claimed today`)
 

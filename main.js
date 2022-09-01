@@ -1,17 +1,17 @@
 const fs = require('fs');
-const { Client, Intents, Collection } = require('discord.js');
-// intents required to access those parts of the API
-const client = new Client({ partials: ['CHANNEL', 'MESSAGE', 'REACTION'],
-    intents: [
-    Intents.FLAGS.DIRECT_MESSAGES,
-    Intents.FLAGS.GUILDS, 
-    Intents.FLAGS.GUILD_BANS,
-    Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-    Intents.FLAGS.GUILD_MEMBERS, 
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_MESSAGES, 
-    Intents.FLAGS.GUILD_PRESENCES, 
-]});
+const { Client, GatewayIntentBits, Collection } = require('discord.js')
+// intents required to access those parts of discord.js
+const client = new Client({ intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.GuildBans,
+    GatewayIntentBits.GuildEmojisAndStickers,
+    GatewayIntentBits.GuildMembers, 
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMessages, 
+    GatewayIntentBits.GuildVoiceStates,
+    ]
+});
 
 const config = require('./config.json');
 

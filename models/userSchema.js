@@ -20,4 +20,3 @@ const model = mongoose.model("users", userSchema);
 
 module.exports = model;
 
-

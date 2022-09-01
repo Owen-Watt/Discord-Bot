@@ -12,7 +12,7 @@ module.exports = (client) => {
 			client.guildCommandArray.push(command.data.toJSON());
 		}
 
-		const rest = new REST({ version: '9' }).setToken(token);
+		const rest = new REST({ version: '10' }).setToken(token);
 
 		(async () => {
 			try {	
@@ -34,12 +34,13 @@ module.exports = (client) => {
 		client.globalCommandArray = [];
 
 		for(const file of commandFiles){
+			console.log(file)
 			const command = require(`../commands/globalCommands/${file}`);
 			client.commands.set(command.data.name, command);
 			client.globalCommandArray.push(command.data.toJSON());
 		}
 
-		const rest = new REST({ version: '9' }).setToken(token);
+		const rest = new REST({ version: '10' }).setToken(token);
 
 		(async () => {
 			try {

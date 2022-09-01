@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const Users = require('../../models/userSchema');
 const options = { 
     minimumFractionDigits: 2,
@@ -17,13 +16,14 @@ module.exports = {
         .addNumberOption(tip =>
             tip.setName('tip')
                 .setDescription('Amount to tip')
-                .setRequired(true)),
+                .setRequired(true))
+        .setDMPermission(false),
 
-	async execute(interaction, profileData) {
+	async execute(interaction, profileData, client, server, color) {
         var userToTip = interaction.options.getMentionable('user');
         var amountToTip = interaction.options.getNumber('tip');
-        var tipEmbed = new MessageEmbed()
-        .setColor('GREEN')
+        var tipEmbed = new EmbedBuilder()
+        .setColor(color)
         .setTitle(`**Tip** :money_with_wings:`)
         .setDescription(`${interaction.member} sent **$${amountToTip.toLocaleString('en', options)}** to ${userToTip} `)
 
@@ -66,8 +66,8 @@ module.exports = {
                 embeds: [tipEmbed],
             });
         }else{
-            tipEmbed = new MessageEmbed()
-            .setColor('RED')
+            tipEmbed = new EmbedBuilder()
+            .setColor('0xff0000')
             .setTitle(`**Tip**`)
             .setDescription(`:x: You cannot tip $${amountToTip.toLocaleString('en', options)} to ${userToTip}\nBalance: **$${(profileData.cash).toLocaleString('en', options)}**`)
 

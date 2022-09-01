@@ -1,6 +1,5 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
 const Users = require('../../models/userSchema');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -11,7 +10,7 @@ module.exports = {
                 .setDescription('The user to hug')
                 .setRequired(true)),
 
-	async execute(interaction, profileData) {
+	async execute(interaction, profileData, client, server, color) {
         const target = interaction.options.getMentionable('user');
         
         profileData = await Users.findOne({ userID: target.id });
@@ -35,9 +34,9 @@ module.exports = {
         }
         
         
-        if(target != interaction.member){ 
+        if(target != interaction.user){ 
             await Users.findOneAndUpdate({
-                userID: interaction.member.id,
+                userID: interaction.user.id,
             }, {
                 $inc: {
                     Hugs_Given: 1,
@@ -53,9 +52,9 @@ module.exports = {
             });
         }
 
-        const hugEmbed = new MessageEmbed()
-        .setColor('#F9FAFA')
-        .setDescription(`${target} was **hugged** by ${interaction.member} :heart:`)
+        const hugEmbed = new EmbedBuilder()
+        .setColor(color)
+        .setDescription(`${target} was **hugged** by ${interaction.user} :heart:`)
 
         await interaction.reply({ 
             embeds: [hugEmbed],

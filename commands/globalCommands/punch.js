@@ -1,5 +1,4 @@
-const { MessageEmbed } = require('discord.js');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Users = require('../../models/userSchema');
 
 module.exports = {
@@ -11,11 +10,11 @@ module.exports = {
                 .setDescription('The user to punch')
                 .setRequired(true)),
 
-	async execute(interaction) {
+	async execute(interaction, profileData, client, server, color) {
         const target = interaction.options.getMentionable('user');
-        const punchEmbed = new MessageEmbed()
-        .setColor('#F9FAFA')
-        .setDescription(`${target} was **punched** by ${interaction.member} :anger:`)
+        const punchEmbed = new EmbedBuilder()
+        .setColor(color)
+        .setDescription(`${target} was **punched** by ${interaction.user} :anger:`)
 
         profileData = await Users.findOne({ userID: target.id });
         if(!profileData){
@@ -37,9 +36,9 @@ module.exports = {
             profile.save();
         }
 
-        if(target != interaction.member){ 
+        if(target != interaction.user){ 
             await Users.findOneAndUpdate({
-                userID: interaction.member.id,
+                userID: interaction.user.id,
             }, {
                 $inc: {
                     Punches_Given: 1,

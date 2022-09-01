@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const Users = require('../../models/userSchema');
 const options = { 
     minimumFractionDigits: 2,
@@ -9,9 +8,10 @@ const options = {
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('leaderboard')
-		.setDescription('Display the cash leaderboard'),
-
-	async execute(interaction, profileData, client) {
+		.setDescription('Display the cash leaderboard')
+        .setDMPermission(false),
+        
+	async execute(interaction, profileData, client, server, color) {
         const data = new Map();
         const users = await Users.find({});
         let guild = client.guilds.cache.get(interaction.guildId);
@@ -25,23 +25,22 @@ module.exports = {
                 data.set(database.userID, database.cash);
             }
         }
-        const sortedData = new Map([...data.entries()].sort((a, b) => b[1] - a[1])); // sorting the users by cash
+        const sortedData = new Map([...data.entries()].sort((a, b) => b[1] - a[1]));
 
         var output = "";
         var counter = 0;
 
-        // using a foreach in case a server has less than 10 players in the database
         sortedData.forEach(async (value, key) => {     
             counter++;
             let player = client.users.cache.get(key);
-            output += `**#${counter} **${player}:  **$${value.toLocaleString('en', options)}**\n`
-            if(counter == 10){ // top 10 players have been picked
+            output += `**#${counter}** ${player}:  **$${value.toLocaleString('en', options)}**\n`
+            if(counter == 10){
                 return;
             }
         })
 
-        var leaderboardEmbed = new MessageEmbed()
-        .setColor('BLURPLE')
+        var leaderboardEmbed = new EmbedBuilder()
+        .setColor(color)
         .setDescription(`:trophy: **${guild}'s Cash Leaderboard**\n\n${output}`)
 
         await interaction.reply({ 
