@@ -20,7 +20,7 @@
   "homepage": "https://github.com/owen-watt/discord-bot.git#readme",
   "dependencies": {
     "@discordjs/rest": "^0.3.0",
-    "axios": "^0.25.0",
+    "axios": "^1.6.0",
     "discord-api-types": "^0.26.1",
     "discord.js": "^14.3.0",
     "fs": "^0.0.1-security",
